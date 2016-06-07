@@ -1,0 +1,25 @@
+*.class
+out/
+frontend/karma/
+frontend/node_modules/
+frontend/bin/
+frontend/.idea/
+frontend/vendor/
+frontend/build/
+frontend/etc/
+frontend/node/
+node_modules/
+.idea/
+*.iml
+target/
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see com.clouway.http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
