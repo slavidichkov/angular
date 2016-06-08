@@ -1,8 +1,8 @@
-angular.module('ngBoilerplate', [
+angular.module('bank', [
     'templates-app',
     'templates-common',
     'ui.bootstrap',
-    'ngBoilerplate.home',
+    'bank.home',
     'ui.router'
 ])
     .config(function myAppConfig($stateProvider, $urlRouterProvider) {

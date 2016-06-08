@@ -1,4 +1,4 @@
-angular.module('ngBoilerplate.home', [
+angular.module('bank.home', [
     'ui.router',
     'plusOne'
 ])

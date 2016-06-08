@@ -2,7 +2,7 @@
 //   describe( 'isCurrentUrl', function() {
 //     var AppCtrl, $scope;
 //
-//     beforeEach( module( 'ngBoilerplate' ) );
+//     beforeEach( module( 'bank' ) );
 //
 //     beforeEach( inject( function( $controller, $rootScope ) {
 //       $scope = $rootScope.$new();
