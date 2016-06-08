@@ -1,6 +1,7 @@
 package com.clouway.http.fakeclasses;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
@@ -15,7 +16,16 @@ import java.util.Locale;
 public class FakeResponse implements HttpServletResponse{
     private ByteArrayOutputStream outputStream;
     private String redirectUrl;
+    private ServletOutputStream servletOutputStream;
+    private int status;
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int i) {
+        status = i;
+    }
 
     public void setOutputStream(ByteArrayOutputStream outputStream) {
         this.outputStream = outputStream;
@@ -31,6 +41,13 @@ public class FakeResponse implements HttpServletResponse{
 
     public PrintWriter getWriter() throws IOException {
         return new PrintWriter(outputStream);
+    }
+    public void setServletOutputStream(ServletOutputStream servletOutputStream){
+        this.servletOutputStream = servletOutputStream;
+    }
+
+    public ServletOutputStream getOutputStream() throws IOException {
+        return servletOutputStream;
     }
 
     public void addCookie(Cookie cookie) {
@@ -89,16 +106,8 @@ public class FakeResponse implements HttpServletResponse{
 
     }
 
-    public void setStatus(int i) {
-
-    }
-
     public void setStatus(int i, String s) {
 
-    }
-
-    public int getStatus() {
-        return 0;
     }
 
     public String getHeader(String s) {
@@ -118,10 +127,6 @@ public class FakeResponse implements HttpServletResponse{
     }
 
     public String getContentType() {
-        return null;
-    }
-
-    public ServletOutputStream getOutputStream() throws IOException {
         return null;
     }
 

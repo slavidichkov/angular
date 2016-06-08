@@ -3,6 +3,7 @@ angular.module('bank', [
     'templates-common',
     'ui.bootstrap',
     'bank.home',
+    'bank.login',
     'ui.router'
 ])
     .config(function myAppConfig($stateProvider, $urlRouterProvider) {

@@ -1,6 +1,7 @@
 package com.clouway.http;
 
 import com.clouway.http.authorization.SecurityFilter;
+import com.clouway.http.login.Login;
 import com.google.inject.servlet.ServletModule;
 
 import javax.servlet.annotation.WebListener;
@@ -13,7 +14,7 @@ public class ServletsModule extends ServletModule {
   @Override
   protected void configureServlets() {
     filter("/*").through(ErrorFilter.class);
-    filter("/*").through(SecurityFilter.class);
+//    filter("/*").through(SecurityFilter.class);
 
     serve("/").with(Home.class);
     serve("/errorpage").with(ErrorPage.class);

@@ -4,8 +4,6 @@ import com.clouway.core.*;
 import com.clouway.http.fakeclasses.FakeRequest;
 import com.clouway.http.fakeclasses.FakeResponse;
 import com.google.common.base.Optional;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.jmock.Expectations;
 import org.jmock.auto.Mock;

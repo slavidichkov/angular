@@ -1,5 +1,6 @@
 package com.clouway.http.fakeclasses;
 
+
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -20,12 +21,21 @@ public class FakeRequest implements HttpServletRequest {
     private List<Cookie> cookies=new ArrayList<Cookie>(){{
         add(new Cookie("dada","dadadafsafawefg"));
     }};
+    private ServletInputStream servletInputStream;
 
     public FakeRequest(FakeSession session) {
         this.session = session;
     }
 
     public FakeRequest() {
+    }
+
+    public void setServletInputStream(ServletInputStream servletInputStream) throws IOException {
+        this.servletInputStream = servletInputStream;
+    }
+
+    public ServletInputStream getInputStream() throws IOException {
+        return servletInputStream;
     }
 
     public String getRequestURI() {
@@ -212,10 +222,6 @@ public class FakeRequest implements HttpServletRequest {
     }
 
     public String getContentType() {
-        return null;
-    }
-
-    public ServletInputStream getInputStream() throws IOException {
         return null;
     }
 

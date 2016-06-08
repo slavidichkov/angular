@@ -1,5 +1,10 @@
 *.class
 out/
+src/main/webapp/assets
+src/main/webapp/vendor
+src/main/webapp/src
+src/main/webapp/*.html
+src/main/webapp/*.js
 .idea/
 *.iml
 target/

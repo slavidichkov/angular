@@ -1,0 +1,31 @@
+<div class="container">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+        <form name="userForm" ng-submit="submit()" ng-controller="login" novalidate>
+
+            <!-- EMAIL -->
+            <div class="form-group"
+                 ng-class="{ 'has-error' : userForm.email.$invalid && !userForm.email.$pristine || (errorMessages.wrongEmail != undifined)}">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="Email" class="form-control" ng-model="user.email"
+                       required>
+                <p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="help-block">Enter a valid
+                    email.</p>
+                <p ng-show="errorMessages.wrongEmail != undifined" class="help-block"
+                   ng-bind="errorMessages.wrongEmail"></p>
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="form-group"
+                 ng-class="{ 'has-error' : (userForm.password.$invalid && userForm.password.$error.pattern) || (errorMessages.wrongPassword != undifined) || errorMessages.wrongEmailOrPassword != undifined}">
+                <label>Password</label>
+                <input type="password" name="password"  placeholder="Password" class="form-control" ng-model="user.password" ng-pattern="/^([a-zA-Z0-9]){6,18}$/" required>
+                <p ng-show="userForm.password.$invalid && userForm.password.$error.pattern" class="help-block">Password have to be betwin 6 and 18 symbols and must contain only digits and letter.</p>
+                <p ng-show="errorMessages.wrongPassword != undifined" class="help-block" ng-bind="errorMessages.wrongPassword"></p>
+                <p ng-show="errorMessages.wrongEmailOrPassword != undifined" class="help-block" ng-bind="errorMessages.wrongEmailOrPassword"></p>
+            </div>
+
+            <button type="submit" class="btn btn-primary" ng-disabled="userForm.$invalid">Login</button>
+        </form>
+    </div>
+</div>
