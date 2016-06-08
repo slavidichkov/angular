@@ -1,16 +1,12 @@
 {
-  "author": "Josh David Miller",
-  "name": "ngbp",
-  "version": "0.3.2",
-  "homepage": "https://github.com/ngbp/ngbp",
-  "licenses": {
-    "type": "MIT",
-    "url": "https://raw.github.com/ngbp/ngbp/master/LICENSE"
-  },
+  "author": "Slavi Dichkov",
+  "name": "bank",
+  "version": "0.0.1",
+  "homepage": "https://github.com/slavidichkov/angular",
   "bugs": "https://github.com/ngbp/ngbp/issues",
   "repository": {
     "type": "git",
-    "url": "git@github.com:ngbp/ngbp.git"
+    "url": "git@github.com:slavidichkov/angular.git"
   },
   "dependencies": {},
   "devDependencies": {
