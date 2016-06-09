@@ -1,7 +1,7 @@
 /**
  * Created by clouway on 27.05.16.
  */
-describe('login section', function () {
+describe('LoginController', function () {
   beforeEach(module('bank.login'));
 
   var scope, http, state, httpBackend, createController;
@@ -13,7 +13,7 @@ describe('login section', function () {
     state = $state;
 
     createController = function() {
-      return $controller('login', {
+      return $controller('LoginController', {
         $scope: scope,
         $http: $http,
         $state: $state
@@ -24,20 +24,15 @@ describe('login section', function () {
 
   it('should have a method to send request with correct data to server', function() {
     spyOn(state,'go');
-    httpBackend
-            .expect('POST', '/login')
-            .respond(200);
+    httpBackend.expect('POST', '/login').respond(200);
     scope.submit();
     httpBackend.flush();
-    state.go('balance');
-    expect(state.go).toHaveBeenCalledWith('balance');
+    expect(state.go).toHaveBeenCalledWith('home');
   });
 
 
   it('should have a method to send request with wrong data to server', function() {
-    httpBackend
-            .expect('POST', '/login')
-            .respond(400 , {"wrongName":"name is incorrect"});
+    httpBackend.expect('POST', '/login').respond(400 , {"wrongName":"name is incorrect"});
     scope.submit();
     httpBackend.flush();
     expect(scope.errorMessages).toEqual({"wrongName":"name is incorrect"});

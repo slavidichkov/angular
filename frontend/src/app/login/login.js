@@ -1,6 +1,5 @@
 angular.module('bank.login', [
-    'ui.router',
-    'plusOne'
+    'ui.router'
 ])
 
     .config(function config($stateProvider) {
@@ -8,7 +7,7 @@ angular.module('bank.login', [
             url: '/login',
             views: {
                 "main": {
-                    controller: 'MainController',
+                    controller: 'LoginController',
                     templateUrl: 'login/login.tpl.html'
                 }
             },
@@ -16,7 +15,7 @@ angular.module('bank.login', [
         });
     })
 
-    .controller("login", function ($scope, $http, $state) {
+    .controller("LoginController", function ($scope, $http, $state) {
         $scope.submit = function () {
             $http.post('/login', $scope.user).success(function () {
                 $state.go("home");
