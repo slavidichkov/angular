@@ -31,25 +31,20 @@ import static org.junit.Assert.assertThat;
  * @author Slavi Dichkov (slavidichkof@gmail.com)
  */
 public class LoginTest {
+  @Rule
+  public JUnitRuleMockery context = new JUnitRuleMockery();
   private Login login;
   private FakeSession session;
   private FakeRequest request;
   private FakeResponse response;
   private FakeUIDGenerator uidGenerator = new FakeUIDGenerator();
-  FakeServletInputStream servletInputStream;
-
-  @Rule
-  public JUnitRuleMockery context = new JUnitRuleMockery();
+  private FakeServletInputStream servletInputStream;
 
   @Mock
   UsersRepository userRepository;
 
   @Mock
   SessionsRepository sessionsRepository;
-
-  @Mock
-  LoggedUsersRepository loggedUsersRepository;
-
 
   @Before
   public void setUp() throws Exception {

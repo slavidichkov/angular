@@ -59,10 +59,10 @@ public class Login extends HttpServlet {
             return;
         }
 
-        Optional<User> optUser = usersRepository.getUser(userDTO.email);
+        Optional<User> loadedUser = usersRepository.getUser(userDTO.email);
 
-        if (optUser.isPresent() && userDTO.password.equals(optUser.get().password)) {
-            User user=optUser.get();
+        if (loadedUser.isPresent() && userDTO.password.equals(loadedUser.get().password)) {
+            User user=loadedUser.get();
             String sid = uidGenerator.randomID();
             sessionsRepository.register(new Session(sid, user.email));
             Cookie cookie = new Cookie("sid", sid);
