@@ -47,12 +47,13 @@ public class Login extends HttpServlet {
         LoginDTO userDTO = new Gson().fromJson(new InputStreamReader(inputStream), LoginDTO.class);
 
         ValidationUser validationUser = newValidationUser()
-                .email(userDTO.email, "wrongEmail")
-                .password(userDTO.password, "wrongPassword")
+                .email(userDTO.email, "wrongEmailOrPassword")
+                .password(userDTO.password, "wrongEmailOrPassword")
                 .build();
 
         Map<String, String> errors = validator.validate(validationUser);
         if (!errors.isEmpty()) {
+            errors.put("wrongEmailOrPassword", "Wrong email or password");
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             servletOutputStream.print(new Gson().toJson(errors));
             servletOutputStream.flush();
