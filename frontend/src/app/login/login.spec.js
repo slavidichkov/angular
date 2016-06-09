@@ -4,12 +4,11 @@
 describe('LoginController', function () {
   beforeEach(module('bank.login'));
 
-  var scope, http, state, httpBackend, createController;
+  var scope, state, httpBackend, createController;
 
   beforeEach(inject(function($rootScope, $httpBackend, $controller, $http, $state) {
     httpBackend = $httpBackend;
     scope = $rootScope.$new();
-    http = $http;
     state = $state;
 
     createController = function() {
