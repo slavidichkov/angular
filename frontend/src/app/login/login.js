@@ -17,19 +17,11 @@ angular.module('bank.login', [
     })
 
     .controller("login", function ($scope, $http, $state) {
-        $scope.user = {};
         $scope.submit = function () {
             $http.post('/login', $scope.user).success(function () {
-                console.log('no error');
                 $state.go("home");
             }).error(function (response) {
-                console.log('error');
-                console.log(response);
                 $scope.errorMessages = response;
             });
         };
-    })
-
-    .controller('MainController', function ($scope) {
-
     });
