@@ -14,7 +14,6 @@ public class ServletsModule extends ServletModule {
   @Override
   protected void configureServlets() {
     filter("/*").through(ErrorFilter.class);
-//    filter("/*").through(SecurityFilter.class);
 
     serve("/").with(Home.class);
     serve("/errorpage").with(ErrorPage.class);
