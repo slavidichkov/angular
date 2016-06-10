@@ -1,6 +1,6 @@
 package com.clouway.http;
 
-import com.clouway.http.authorization.SecurityFilter;
+import com.clouway.http.balance.AccountManager;
 import com.clouway.http.login.Login;
 import com.google.inject.servlet.ServletModule;
 

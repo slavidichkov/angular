@@ -1,6 +1,6 @@
 package com.clouway.http;
 
-import com.clouway.core.LoggedUsersRepository;
+import com.clouway.http.balance.AccountManager;
 import com.google.inject.Singleton;
 import freemarker.template.Configuration;
 import freemarker.template.Template;

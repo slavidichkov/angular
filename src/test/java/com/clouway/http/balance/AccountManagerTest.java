@@ -1,10 +1,13 @@
-package com.clouway.http;
+package com.clouway.http.balance;
 
 import com.clouway.core.*;
 
 import com.clouway.http.fakeclasses.FakeRequest;
 import com.clouway.http.fakeclasses.FakeResponse;
+import com.clouway.http.fakeclasses.FakeServletInputStream;
+import com.clouway.http.fakeclasses.FakeServletOutputStream;
 import com.clouway.http.fakeclasses.FakeSession;
+import com.google.gson.Gson;
 import com.google.inject.util.Providers;
 import org.jmock.Expectations;
 import org.jmock.auto.Mock;
@@ -17,7 +20,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
@@ -29,6 +35,8 @@ public class AccountManagerTest {
     private FakeRequest request;
     private FakeResponse response;
     private FakeSession session;
+    private FakeServletInputStream servletInputStream;
+    private FakeServletOutputStream servletOutputStream;
     private final String sid="1234567890";
     private final User user = new User("ivan", "ivan1313", "ivan@abv.bg", "ivan123", "sliven", 23);
 
@@ -51,85 +59,83 @@ public class AccountManagerTest {
         session = new FakeSession();
         request = new FakeRequest(session);
         response = new FakeResponse();
-    }
-
-    @Test
-    public void userBalance() throws IOException, ServletException {
-        final Cookie cookie=new Cookie("sid",sid);
-        request.addCookies(cookie);
-
-        context.checking(new Expectations() {{
-            oneOf(currentUser).getUser();
-            will(returnValue(user));
-            oneOf(loggedUsersRepository).getCount();
-            will(returnValue(1));
-            oneOf(accountsRepository).getBalance(user);
-            will(returnValue(22.23));
-        }});
-
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        response.setOutputStream(out);
-
-        accountManager.doGet(request, response);
-
-        String expected = out.toString();
-        assertThat(expected.contains("Balance is : 22.23"), is(true));
+        servletInputStream= new FakeServletInputStream();
+        servletOutputStream = new FakeServletOutputStream();
     }
 
     @Test
     public void userWithdraw() throws IOException, ServletException, InsufficientAvailability {
         final Cookie cookie=new Cookie("sid",sid);
+        final AccountManagerDAO accountManagerDAO=new AccountManagerDAO("withdraw","23.12");
         request.addCookies(cookie);
 
-        request.setParameter("transactionType", "withdraw");
-        request.setParameter("amount", "23.12");
+        servletInputStream.setJson(new Gson().toJson(accountManagerDAO));
+
+        request.setServletInputStream(servletInputStream);
 
         context.checking(new Expectations() {{
             oneOf(currentUser).getUser();
             will(returnValue(user));
             oneOf(loggedUsersRepository).getCount();
             will(returnValue(1));
-            oneOf(accountsRepository).withdraw(user,23.12);
+            oneOf(accountsRepository).withdraw(user,new Double(accountManagerDAO.amount));
             will(returnValue(0.0));
             oneOf(accountsRepository).getBalance(user);
             will(returnValue(0.0));
         }});
 
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        response.setOutputStream(out);
+
+        response.setServletOutputStream(servletOutputStream);
 
         accountManager.doPost(request, response);
 
-        String expected = out.toString();
-        assertThat(expected.contains("Balance is : 0"), is(true));
+        Map<String, String> errorsMap = new HashMap<String, String>();
+        errorsMap.put("balanceMessage","Your balance is 0.0");
+        errorsMap.put("loggedUsers","Users in the system: 1");
+        errorsMap.put("transactionMessage","Withdraw was successful");
+
+
+        String messages = new Gson().toJson(errorsMap);
+        String expected = servletOutputStream.getJson();
+        assertThat(expected, is(equalTo(messages)));
+        assertThat(response.getStatus(), is(equalTo(200)));
     }
 
     @Test
     public void userDeposit() throws IOException, ServletException {
         final Cookie cookie=new Cookie("sid",sid);
+        final AccountManagerDAO accountManagerDAO=new AccountManagerDAO("deposit","23.12");
         request.addCookies(cookie);
 
-        request.setParameter("transactionType", "deposit");
-        request.setParameter("amount", "23.12");
+        servletInputStream.setJson(new Gson().toJson(accountManagerDAO));
+
+        request.setServletInputStream(servletInputStream);
 
         context.checking(new Expectations() {{
             oneOf(currentUser).getUser();
             will(returnValue(user));
-            oneOf(loggedUsersRepository).getCount();
-            will(returnValue(1));
             oneOf(accountsRepository).deposit(user,23.12);
             will(returnValue(23.12));
             oneOf(accountsRepository).getBalance(user);
             will(returnValue(23.12));
+            oneOf(loggedUsersRepository).getCount();
+            will(returnValue(1));
         }});
 
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        response.setOutputStream(out);
+        response.setServletOutputStream(servletOutputStream);
 
         accountManager.doPost(request, response);
 
-        String expected = out.toString();
-        assertThat(expected.contains("Balance is : 23.12"), is(true));
+        Map<String, String> errorsMap = new HashMap<String, String>();
+        errorsMap.put("balanceMessage","Your balance is 23.12");
+        errorsMap.put("loggedUsers","Users in the system: 1");
+        errorsMap.put("transactionMessage","Deposit was successful");
+
+
+        String messages = new Gson().toJson(errorsMap);
+        String expected = servletOutputStream.getJson();
+        assertThat(expected, is(equalTo(messages)));
+        assertThat(response.getStatus(), is(equalTo(200)));
     }
 
 }
