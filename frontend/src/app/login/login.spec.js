@@ -11,14 +11,11 @@ describe('LoginController', function () {
     scope = $rootScope.$new();
     state = $state;
 
-    createController = function() {
-      return $controller('LoginController', {
-        $scope: scope,
-        $http: $http,
-        $state: $state
-      });
-    };
-    createController();
+    $controller('LoginController', {
+      $scope: scope,
+      $http: $http,
+      $state: $state
+    });
   }));
 
   it('should have a method to send request with correct data to server', function() {
