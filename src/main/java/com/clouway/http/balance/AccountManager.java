@@ -1,13 +1,11 @@
 package com.clouway.http.balance;
 
-import com.clouway.adapter.persistence.sql.DatabaseException;
 import com.clouway.core.*;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import freemarker.template.*;
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
@@ -16,9 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -45,15 +41,28 @@ public class AccountManager extends HttpServlet {
         resp.setContentType("application/json;charset=UTF-8");
 
         ServletInputStream inputStream = req.getInputStream();
-        AccountManagerDAO accountManagerDAO = new Gson().fromJson(new InputStreamReader(inputStream), AccountManagerDAO.class);
-
-        String amount= accountManagerDAO.amount;
+        AccountManagerDTO accountManagerDTO = new Gson().fromJson(new InputStreamReader(inputStream), AccountManagerDTO.class);
 
         User user = currentUserProvider.get().getUser();
 
+        Map<String,String> messages=new HashMap<String, String>();
+
+        if(user==null){
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
         Double balance = accountsRepository.getBalance(user);
 
-        Map<String,String> messages=new HashMap<String, String>();
+        if (accountManagerDTO==null){
+            resp.setStatus(200);
+            messages.put("loggedUsers","Users in the system: "+String.valueOf(loggedUsersRepository.getCount()));
+            messages.put("balanceMessage","Your balance is "+String.valueOf(balance));
+            servletOutputStream.print(new Gson().toJson(messages));
+            return;
+        }
+
+        String amount= accountManagerDTO.amount;
 
         if(!isValidAmount(amount)){
             messages.put("errorMessage",amountErrorMessage);
@@ -61,7 +70,7 @@ public class AccountManager extends HttpServlet {
             servletOutputStream.print(new Gson().toJson(messages));
             return;
         }
-        if ("withdraw".equals(accountManagerDAO.type)) {
+        if ("withdraw".equals(accountManagerDTO.type)) {
             try {
                 balance = accountsRepository.withdraw(user, Double.valueOf(amount));
                 messages.put("transactionMessage","Withdraw was successful");
@@ -70,7 +79,7 @@ public class AccountManager extends HttpServlet {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
         }
-        if ("deposit".equals(accountManagerDAO.type)) {
+        if ("deposit".equals(accountManagerDTO.type)) {
             balance = accountsRepository.deposit(user, Double.valueOf(amount));
             messages.put("transactionMessage","Deposit was successful");
         }

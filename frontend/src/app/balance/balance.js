@@ -15,11 +15,28 @@ angular.module('bank.balance', [
           });
         })
 
-        .controller("TransactionController", function ($scope, $http) {
+        .controller("TransactionController", function ($scope, $http, $state) {
+
+          $scope.init = function () {
+            $http.post('/balance', $scope.transaction).success(function (response) {
+              $scope.messages = response;
+            }).error(function (response, status) {
+              if (status === 401) {
+                $state.go("login");
+                return;
+              }
+              $scope.messages = response;
+            });
+          };
+
           $scope.submit = function () {
             $http.post('/balance', $scope.transaction).success(function (response) {
               $scope.messages = response;
-            }).error(function (response) {
+            }).error(function (response, status) {
+              if (status === 401) {
+                $state.go("login");
+                return;
+              }
               $scope.messages = response;
             });
           };

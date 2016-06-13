@@ -18,7 +18,6 @@ import org.junit.Test;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,10 +65,10 @@ public class AccountManagerTest {
     @Test
     public void userWithdraw() throws IOException, ServletException, InsufficientAvailability {
         final Cookie cookie=new Cookie("sid",sid);
-        final AccountManagerDAO accountManagerDAO=new AccountManagerDAO("withdraw","23.12");
+        final AccountManagerDTO accountManagerDTO =new AccountManagerDTO("withdraw","23.12");
         request.addCookies(cookie);
 
-        servletInputStream.setJson(new Gson().toJson(accountManagerDAO));
+        servletInputStream.setJson(new Gson().toJson(accountManagerDTO));
 
         request.setServletInputStream(servletInputStream);
 
@@ -78,7 +77,7 @@ public class AccountManagerTest {
             will(returnValue(user));
             oneOf(loggedUsersRepository).getCount();
             will(returnValue(1));
-            oneOf(accountsRepository).withdraw(user,new Double(accountManagerDAO.amount));
+            oneOf(accountsRepository).withdraw(user,new Double(accountManagerDTO.amount));
             will(returnValue(0.0));
             oneOf(accountsRepository).getBalance(user);
             will(returnValue(0.0));
@@ -104,10 +103,10 @@ public class AccountManagerTest {
     @Test
     public void userDeposit() throws IOException, ServletException {
         final Cookie cookie=new Cookie("sid",sid);
-        final AccountManagerDAO accountManagerDAO=new AccountManagerDAO("deposit","23.12");
+        final AccountManagerDTO accountManagerDTO =new AccountManagerDTO("deposit","23.12");
         request.addCookies(cookie);
 
-        servletInputStream.setJson(new Gson().toJson(accountManagerDAO));
+        servletInputStream.setJson(new Gson().toJson(accountManagerDTO));
 
         request.setServletInputStream(servletInputStream);
 
