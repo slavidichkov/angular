@@ -1,6 +1,8 @@
 package com.clouway.http;
 
 import com.clouway.http.authorization.SecurityFilter;
+import com.clouway.http.balance.BalanceManager;
+import com.clouway.http.deposit.DepositManager;
 import com.clouway.http.login.Login;
 import com.google.inject.servlet.ServletModule;
 
@@ -20,6 +22,7 @@ public class ServletsModule extends ServletModule {
     serve("/login").with(Login.class);
     serve("/logout").with(Logout.class);
     serve("/registration").with(Register.class);
-    serve("/balance").with(AccountManager.class);
+    serve("/account/deposit").with(DepositManager.class);
+    serve("/account/balance").with(BalanceManager.class);
   }
 }

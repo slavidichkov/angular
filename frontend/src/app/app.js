@@ -4,6 +4,7 @@ angular.module('bank', [
     'ui.bootstrap',
     'bank.home',
     'bank.login',
+    'bank.deposit',
     'ui.router'
 ])
     .config(function myAppConfig($stateProvider, $urlRouterProvider) {
