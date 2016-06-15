@@ -20,18 +20,18 @@ describe( 'deposit section', function() {
   }));
 
   it('success deposit', function() {
-    scope.transaction={"amount":'23.00'};
-    httpBackend.expect('POST', '/account/deposit',scope.transaction).respond(200, {"balance":"23.00"});
-    scope.deposit();
+    transaction={"amount":'23.00'};
+    httpBackend.expect('POST', '/account/deposit', transaction).respond(200, {"balance":"23.00"});
+    scope.deposit(transaction);
     httpBackend.flush();
     expect(scope.accountBalance).toEqual({"balance":"23.00"});
   });
 
 
   it('try to deposit with invalid amount', function() {
-    scope.transaction={"amount":'23dsd00'};
-    httpBackend.expect('POST', '/account/deposit',scope.transaction).respond(400 , {"error":'INVALID-AMOUNT'});
-    scope.deposit();
+    transaction={"amount":'23dsd00'};
+    httpBackend.expect('POST', '/account/deposit',transaction).respond(400 , {"error":'INVALID-AMOUNT'});
+    scope.deposit(transaction);
     httpBackend.flush();
     expect(scope.errors).toEqual({"error":'INVALID-AMOUNT'});
   });

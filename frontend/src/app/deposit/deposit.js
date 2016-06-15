@@ -31,8 +31,8 @@ angular.module('bank.deposit', [
             });
           };
 
-          $scope.deposit = function () {
-            $http.post('/account/deposit', $scope.transaction).success(function (response) {
+          $scope.deposit = function (transaction) {
+            $http.post('/account/deposit',transaction).success(function (response) {
               $scope.accountBalance = response;
               $scope.errors = {};
             }).error(function (response, status) {
