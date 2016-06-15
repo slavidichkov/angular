@@ -3,7 +3,7 @@ package com.clouway.http.deposit;
 /**
  * @author Slavi Dichkov (slavidichkof@gmail.com)
  */
-public class ResponseDTO {
+public class DepositResponseDTO {
   private String error;
   private String success;
 

@@ -41,29 +41,24 @@ public class DepositManager extends HttpServlet {
 
     User user = currentUserProvider.get().getUser();
 
-    if (user == null) {
-      resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      return;
-    }
-
     ServletInputStream inputStream = req.getInputStream();
-    RequestDTO requestDTO = new Gson().fromJson(new InputStreamReader(inputStream), RequestDTO.class);
-    String amount = requestDTO.amount;
+    DepositRequestDTO depositRequestDTO = new Gson().fromJson(new InputStreamReader(inputStream), DepositRequestDTO.class);
+    String amount = depositRequestDTO.amount;
 
-    ResponseDTO responseDTO = new ResponseDTO();
+    DepositResponseDTO depositResponseDTO = new DepositResponseDTO();
     ServletOutputStream servletOutputStream = resp.getOutputStream();
 
     if (!isValidAmount(amount)) {
       resp.setStatus(500);
-      responseDTO.setError("INVALID-AMOUNT");
-      servletOutputStream.print(new Gson().toJson(responseDTO));
+      depositResponseDTO.setError("INVALID-AMOUNT");
+      servletOutputStream.print(new Gson().toJson(depositResponseDTO));
       return;
     }
 
-    accountsRepository.deposit(user, Double.valueOf(requestDTO.amount));
+    accountsRepository.deposit(user, Double.valueOf(depositRequestDTO.amount));
     resp.setStatus(200);
-    responseDTO.setSuccess("SUCCESS_DEPOSIT");
-    servletOutputStream.print(new Gson().toJson(responseDTO));
+    depositResponseDTO.setSuccess("SUCCESS_DEPOSIT");
+    servletOutputStream.print(new Gson().toJson(depositResponseDTO));
   }
 
   private boolean isValidAmount(String amount) {

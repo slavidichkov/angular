@@ -3,6 +3,7 @@ package com.clouway.http.authorization;
 import com.clouway.core.*;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import javax.servlet.*;
@@ -16,15 +17,11 @@ import java.util.Set;
  */
 @Singleton
 public class SecurityFilter implements Filter {
-  private final Set<String> allowedPages;
-  private final SessionsRepository sessionsRepository;
-  private final Time time;
+  private final Provider<CurrentUser> currentUserProvider;
 
   @Inject
-  public SecurityFilter(@AllowedPages Set<String> allowedPages , SessionsRepository sessionsRepository, Time time) {
-    this.allowedPages = allowedPages;
-    this.sessionsRepository = sessionsRepository;
-    this.time = time;
+  public SecurityFilter( Provider<CurrentUser> currentUserProvider) {
+    this.currentUserProvider = currentUserProvider;
   }
 
   public void init(FilterConfig filterConfig) throws ServletException {
@@ -32,44 +29,15 @@ public class SecurityFilter implements Filter {
   }
 
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-    HttpServletRequest req = (HttpServletRequest) request;
     HttpServletResponse resp = (HttpServletResponse) response;
 
-    String uri = req.getRequestURI();
-    SidGatherer sidGatherer = new CookieSidGatherer(req.getCookies());
+    User user = currentUserProvider.get().getUser();
 
-    Optional<Session> optSession = sessionsRepository.getSession(sidGatherer.getSid());
-
-    String endpoint = "";
-    String[] endpoints = uri.split("/");
-    if (endpoints.length > 0) {
-      endpoint = endpoints[1];
-    }
-    if (endpoint.equals("errorpage")) {
-      resp.sendRedirect("/");
+    if (user == null) {
+      resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
       return;
     }
-    if (optSession.isPresent() && optSession.get().isExpired(time)) {
-      sessionsRepository.remove(optSession.get());
-      resp.sendRedirect("/login");
-      return;
-    }
-    if (optSession.isPresent() && !optSession.get().isExpired(time)) {
-      sessionsRepository.updateSessionExpiresOn(optSession.get().ID);
-    }
-    if (isPageAllowed(optSession, endpoint) || (endpoint.equals("logout")) || (endpoint.equals(""))) {
-      chain.doFilter(request, response);
-      return;
-    }
-    resp.sendRedirect("/");
-
-  }
-
-  private boolean isPageAllowed(Optional<Session> optSession, String endpoint) {
-    if (optSession.isPresent()) {
-      return !allowedPages.contains(endpoint);
-    }
-    return allowedPages.contains(endpoint);
+    chain.doFilter(request,response);
   }
 
   public void destroy() {

@@ -3,10 +3,10 @@ package com.clouway.http.balance;
 /**
  * @author Slavi Dichkov (slavidichkof@gmail.com)
  */
-public class ResponseDTO {
+public class ResponseBalanceDTO {
   private String balance;
 
-  public void setBalance(String balance) {
+  public ResponseBalanceDTO(String balance) {
     this.balance = balance;
   }
 }

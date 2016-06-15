@@ -3,11 +3,7 @@ package com.clouway.http.balance;
 import com.clouway.core.*;
 import com.clouway.http.fakeclasses.FakeRequest;
 import com.clouway.http.fakeclasses.FakeResponse;
-import com.clouway.http.fakeclasses.FakeServletInputStream;
 import com.clouway.http.fakeclasses.FakeServletOutputStream;
-import com.clouway.http.fakeclasses.FakeSession;
-import com.clouway.http.fakeclasses.FakeUIDGenerator;
-import com.clouway.http.login.LoginDTO;
 import com.google.gson.Gson;
 import com.google.inject.util.Providers;
 import org.jmock.Expectations;
@@ -39,14 +35,11 @@ public class BalanceManagerTest {
   AccountsRepository accountsRepository;
 
   @Mock
-  LoggedUsersRepository loggedUsersRepository;
-
-  @Mock
   CurrentUser currentUser;
 
   @Before
   public void setUp() throws Exception {
-    balanceManager = new BalanceManager(accountsRepository, Providers.of(currentUser),loggedUsersRepository);
+    balanceManager = new BalanceManager(accountsRepository, Providers.of(currentUser));
     request = new FakeRequest();
     response = new FakeResponse();
     servletOutputStream = new FakeServletOutputStream();
@@ -63,10 +56,9 @@ public class BalanceManagerTest {
       will(returnValue(23.23));
     }});
 
-    ResponseDTO responseDTO=new ResponseDTO();
-    responseDTO.setBalance("23.23");
+    ResponseBalanceDTO responseBalanceDTO =new ResponseBalanceDTO("23.23");
 
-    String responseMessage = new Gson().toJson(responseDTO);
+    String responseMessage = new Gson().toJson(responseBalanceDTO);
 
     response.setServletOutputStream(servletOutputStream);
 
@@ -75,19 +67,5 @@ public class BalanceManagerTest {
     String expected = servletOutputStream.getJson();
     assertThat(expected, is(equalTo(responseMessage)));
     assertThat(response.getStatus(), is(equalTo(200)));
-  }
-
-  @Test
-  public void notRegisteredUser() throws IOException, ServletException {
-    final User user = new User("ivan", "ivan1313", "ivan@abv.bg", "ivan123", "sliven", 23);
-
-    context.checking(new Expectations() {{
-      oneOf(currentUser).getUser();
-      will(returnValue(null));
-    }});
-
-    balanceManager.doPost(request, response);
-
-    assertThat(response.getStatus(), is(equalTo(401)));
   }
 }

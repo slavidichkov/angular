@@ -2,7 +2,6 @@ package com.clouway.http.balance;
 
 import com.clouway.core.AccountsRepository;
 import com.clouway.core.CurrentUser;
-import com.clouway.core.LoggedUsersRepository;
 import com.clouway.core.User;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
@@ -23,13 +22,11 @@ import java.io.IOException;
 public class BalanceManager extends HttpServlet {
   private final AccountsRepository accountsRepository;
   private final Provider<CurrentUser> currentUserProvider;
-  private LoggedUsersRepository loggedUsersRepository;
 
   @Inject
-  public BalanceManager(AccountsRepository accountsRepository, Provider<CurrentUser> currentUserProvider, LoggedUsersRepository loggedUsersRepository) {
+  public BalanceManager(AccountsRepository accountsRepository, Provider<CurrentUser> currentUserProvider) {
     this.accountsRepository = accountsRepository;
     this.currentUserProvider = currentUserProvider;
-    this.loggedUsersRepository = loggedUsersRepository;
   }
 
   @Override
@@ -39,18 +36,12 @@ public class BalanceManager extends HttpServlet {
 
     User user = currentUserProvider.get().getUser();
 
-    if (user == null) {
-      resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      return;
-    }
-
     Double balance = accountsRepository.getBalance(user);
 
-    ResponseDTO responseDTO = new ResponseDTO();
+    ResponseBalanceDTO responseBalanceDTO = new ResponseBalanceDTO(String.valueOf(balance));
     ServletOutputStream servletOutputStream = resp.getOutputStream();
 
     resp.setStatus(200);
-    responseDTO.setBalance(String.valueOf(balance));
-    servletOutputStream.print(new Gson().toJson(responseDTO));
+    servletOutputStream.print(new Gson().toJson(responseBalanceDTO));
   }
 }

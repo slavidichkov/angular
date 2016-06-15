@@ -3,7 +3,7 @@
  */
 describe( 'deposit section', function() {
   beforeEach( module( 'bank.deposit' ) );
-  var scope, state, httpBackend;
+  var scope, state, httpBackend, transaction;
 
   beforeEach(inject(function($rootScope, $httpBackend, $controller, $http, $state) {
     httpBackend = $httpBackend;
@@ -14,26 +14,30 @@ describe( 'deposit section', function() {
       $scope: scope,
       $http: $http,
       $state: state
+
     });
 
   }));
 
   it('success deposit', function() {
-    httpBackend.expect('POST', '/account/deposit').respond(200);
+    scope.transaction={"amount":'23.00'};
+    httpBackend.expect('POST', '/account/deposit',scope.transaction).respond(200, {"success": 'SUCCESS_DEPOSIT'});
     httpBackend.expect('POST', '/account/balance').respond(200, {"balance":"23.00"});
     scope.deposit();
     httpBackend.flush();
+    expect(scope.depositResult).toEqual({"success": 'SUCCESS_DEPOSIT'});
     expect(scope.account).toEqual({"balance":"23.00"});
   });
 
 
   it('try to deposit with invalid amount', function() {
-    httpBackend.expect('POST', '/account/deposit').respond(400 , {"error":'INVALID-AMOUNT'});
-    httpBackend.expect('POST', '/account/balance').respond(200, {"balance":"23.00"});
+    scope.transaction={"amount":'23dsd00'};
+    httpBackend.expect('POST', '/account/deposit',scope.transaction).respond(400 , {"error":'INVALID-AMOUNT'});
+    httpBackend.expect('POST', '/account/balance').respond(200, {"balance":"00.00"});
     scope.deposit();
     httpBackend.flush();
-    expect(scope.depositDTO).toEqual({"error":'INVALID-AMOUNT'});
-    expect(scope.account).toEqual({"balance":"23.00"});
+    expect(scope.depositResult).toEqual({"error":'INVALID-AMOUNT'});
+    expect(scope.account).toEqual({"balance":"00.00"});
   });
 
   it('try to deposit not logged user', function() {
@@ -46,7 +50,7 @@ describe( 'deposit section', function() {
 
   it('get balance from server', function() {
     httpBackend.expect('POST', '/account/balance').respond(200, {"balance":"350"});
-    scope.init();
+    scope.getBalance();
     httpBackend.flush();
     expect(scope.account).toEqual({"balance":"350"});
   });
@@ -54,7 +58,7 @@ describe( 'deposit section', function() {
   it('init method for not logged user', function() {
     spyOn(state,'go');
     httpBackend.expect('POST', '/account/balance').respond(401);
-    scope.init();
+    scope.getBalance();
     httpBackend.flush();
     expect(state.go).toHaveBeenCalledWith('login');
   });
