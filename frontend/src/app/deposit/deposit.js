@@ -22,7 +22,7 @@ angular.module('bank.deposit', [
 
           $scope.getBalance = function () {
             $http.post('/account/balance').success(function (response) {
-              $scope.account = response;
+              $scope.accountBalance = response;
             }).error(function (response, status) {
               if (status === 401) {
                 $state.go("login");
@@ -33,15 +33,14 @@ angular.module('bank.deposit', [
 
           $scope.deposit = function () {
             $http.post('/account/deposit', $scope.transaction).success(function (response) {
-              $scope.depositResult = response;
-              $scope.getBalance();
+              $scope.accountBalance = response;
+              $scope.errors = {};
             }).error(function (response, status) {
               if (status === 401) {
                 $state.go('login');
                 return;
               }
-              $scope.depositResult = response;
-              $scope.getBalance();
+              $scope.errors = response;
             });
           };
         });

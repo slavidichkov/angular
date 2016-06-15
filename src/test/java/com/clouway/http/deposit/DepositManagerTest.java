@@ -2,7 +2,6 @@ package com.clouway.http.deposit;
 
 import com.clouway.core.AccountsRepository;
 import com.clouway.core.CurrentUser;
-import com.clouway.core.LoggedUsersRepository;
 import com.clouway.core.User;
 import com.clouway.http.fakeclasses.FakeRequest;
 import com.clouway.http.fakeclasses.FakeResponse;
@@ -40,41 +39,36 @@ public class DepositManagerTest {
   AccountsRepository accountsRepository;
 
   @Mock
-  LoggedUsersRepository loggedUsersRepository;
-
-  @Mock
   CurrentUser currentUser;
 
   @Before
   public void setUp() throws Exception {
-    depositManager = new DepositManager(accountsRepository, Providers.of(currentUser),loggedUsersRepository);
-    request = new FakeRequest();
-    response = new FakeResponse();
+    depositManager = new DepositManager(accountsRepository, Providers.of(currentUser));
     servletInputStream = new FakeServletInputStream();
     servletOutputStream = new FakeServletOutputStream();
+    request = new FakeRequest(servletInputStream);
+    response = new FakeResponse(servletOutputStream);
   }
 
   @Test
-  public void registeredUser() throws IOException, ServletException {
+  public void validAmount() throws IOException, ServletException {
     final User user = new User("ivan", "ivan1313", "ivan@abv.bg", "ivan123", "sliven", 23);
     final DepositRequestDTO depositRequestDTO = new DepositRequestDTO("22.23");
 
     servletInputStream.setJson(new Gson().toJson(depositRequestDTO));
 
-    request.setServletInputStream(servletInputStream);
 
     context.checking(new Expectations() {{
       oneOf(currentUser).getUser();
       will(returnValue(user));
       oneOf(accountsRepository).deposit(user,22.23);
+      oneOf(accountsRepository).getBalance(user);
+      will(returnValue(22.23));
     }});
 
-    DepositResponseDTO depositResponseDTO =new DepositResponseDTO();
-    depositResponseDTO.setSuccess("SUCCESS_DEPOSIT");
+    DepositSuccessDTO depositSuccessDTO =new DepositSuccessDTO(22.23);
 
-    String responseMessage = new Gson().toJson(depositResponseDTO);
-
-    response.setServletOutputStream(servletOutputStream);
+    String responseMessage = new Gson().toJson(depositSuccessDTO);
 
     depositManager.doPost(request, response);
 
@@ -85,24 +79,13 @@ public class DepositManagerTest {
 
   @Test
   public void invalidAmount() throws IOException, ServletException {
-    final User user = new User("ivan", "ivan1313", "ivan@abv.bg", "ivan123", "sliven", 23);
     final DepositRequestDTO depositRequestDTO = new DepositRequestDTO("22er.23");
 
     servletInputStream.setJson(new Gson().toJson(depositRequestDTO));
 
-    request.setServletInputStream(servletInputStream);
+    DepositErrorDTO depositErrorDTO =new DepositErrorDTO("INVALID-AMOUNT");
 
-    context.checking(new Expectations() {{
-      oneOf(currentUser).getUser();
-      will(returnValue(user));
-    }});
-
-    DepositResponseDTO depositResponseDTO =new DepositResponseDTO();
-    depositResponseDTO.setError("INVALID-AMOUNT");
-
-    String responseMessage = new Gson().toJson(depositResponseDTO);
-
-    response.setServletOutputStream(servletOutputStream);
+    String responseMessage = new Gson().toJson(depositErrorDTO);
 
     depositManager.doPost(request, response);
 

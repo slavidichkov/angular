@@ -41,8 +41,8 @@ public class BalanceManagerTest {
   public void setUp() throws Exception {
     balanceManager = new BalanceManager(accountsRepository, Providers.of(currentUser));
     request = new FakeRequest();
-    response = new FakeResponse();
     servletOutputStream = new FakeServletOutputStream();
+    response = new FakeResponse(servletOutputStream);
   }
 
   @Test
@@ -59,8 +59,6 @@ public class BalanceManagerTest {
     ResponseBalanceDTO responseBalanceDTO =new ResponseBalanceDTO("23.23");
 
     String responseMessage = new Gson().toJson(responseBalanceDTO);
-
-    response.setServletOutputStream(servletOutputStream);
 
     balanceManager.doPost(request, response);
 

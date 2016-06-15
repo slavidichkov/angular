@@ -21,23 +21,19 @@ describe( 'deposit section', function() {
 
   it('success deposit', function() {
     scope.transaction={"amount":'23.00'};
-    httpBackend.expect('POST', '/account/deposit',scope.transaction).respond(200, {"success": 'SUCCESS_DEPOSIT'});
-    httpBackend.expect('POST', '/account/balance').respond(200, {"balance":"23.00"});
+    httpBackend.expect('POST', '/account/deposit',scope.transaction).respond(200, {"balance":"23.00"});
     scope.deposit();
     httpBackend.flush();
-    expect(scope.depositResult).toEqual({"success": 'SUCCESS_DEPOSIT'});
-    expect(scope.account).toEqual({"balance":"23.00"});
+    expect(scope.accountBalance).toEqual({"balance":"23.00"});
   });
 
 
   it('try to deposit with invalid amount', function() {
     scope.transaction={"amount":'23dsd00'};
     httpBackend.expect('POST', '/account/deposit',scope.transaction).respond(400 , {"error":'INVALID-AMOUNT'});
-    httpBackend.expect('POST', '/account/balance').respond(200, {"balance":"00.00"});
     scope.deposit();
     httpBackend.flush();
-    expect(scope.depositResult).toEqual({"error":'INVALID-AMOUNT'});
-    expect(scope.account).toEqual({"balance":"00.00"});
+    expect(scope.errors).toEqual({"error":'INVALID-AMOUNT'});
   });
 
   it('try to deposit not logged user', function() {
@@ -52,7 +48,7 @@ describe( 'deposit section', function() {
     httpBackend.expect('POST', '/account/balance').respond(200, {"balance":"350"});
     scope.getBalance();
     httpBackend.flush();
-    expect(scope.account).toEqual({"balance":"350"});
+    expect(scope.accountBalance).toEqual({"balance":"350"});
   });
 
   it('init method for not logged user', function() {

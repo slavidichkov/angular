@@ -19,6 +19,13 @@ public class FakeResponse implements HttpServletResponse{
     private ServletOutputStream servletOutputStream;
     private int status;
 
+    public FakeResponse(ServletOutputStream servletOutputStream) {
+        this.servletOutputStream = servletOutputStream;
+    }
+
+    public FakeResponse() {
+    }
+
     public int getStatus() {
         return status;
     }

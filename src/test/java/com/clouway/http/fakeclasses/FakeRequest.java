@@ -27,6 +27,10 @@ public class FakeRequest implements HttpServletRequest {
         this.session = session;
     }
 
+    public FakeRequest(ServletInputStream servletInputStream) {
+        this.servletInputStream = servletInputStream;
+    }
+
     public FakeRequest() {
     }
 
