@@ -38,10 +38,10 @@ public class AccountManager extends HttpServlet {
 
     Double balance = accountsRepository.getBalance(user);
 
-    BalanceResponseDTO balanceResponseDTO = new BalanceResponseDTO(String.valueOf(balance));
+    AccountResponseDTO accountResponseDTO = new AccountResponseDTO(String.valueOf(balance));
     ServletOutputStream servletOutputStream = resp.getOutputStream();
 
     resp.setStatus(200);
-    servletOutputStream.print(new Gson().toJson(balanceResponseDTO));
+    servletOutputStream.print(new Gson().toJson(accountResponseDTO));
   }
 }

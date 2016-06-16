@@ -56,9 +56,9 @@ public class AccountManagerTest {
       will(returnValue(23.23));
     }});
 
-    BalanceResponseDTO balanceResponseDTO =new BalanceResponseDTO("23.23");
+    AccountResponseDTO accountResponseDTO =new AccountResponseDTO("23.23");
 
-    String responseMessage = new Gson().toJson(balanceResponseDTO);
+    String responseMessage = new Gson().toJson(accountResponseDTO);
 
     accountManager.doPost(request, response);
 

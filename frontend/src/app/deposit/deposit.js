@@ -24,9 +24,8 @@ angular.module('bank.deposit', [
             $http.post('/account/').success(function (response) {
               $scope.account = response;
             }).error(function (response, status) {
-              if (status === 401) {
+              if(notAuthorized(status)){
                 $state.go("login");
-                return;
               }
             });
           };
@@ -36,11 +35,14 @@ angular.module('bank.deposit', [
               $scope.account = response;
               $scope.errors = {};
             }).error(function (response, status) {
-              if (status === 401) {
-                $state.go('login');
-                return;
+              if(notAuthorized(status)){
+                $state.go("login");
               }
               $scope.errors = response;
             });
+          };
+
+          var notAuthorized = function(status){
+            return status === 401;
           };
         });
