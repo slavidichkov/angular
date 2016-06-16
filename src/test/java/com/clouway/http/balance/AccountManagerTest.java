@@ -23,10 +23,10 @@ import static org.junit.Assert.*;
 /**
  * @author Slavi Dichkov (slavidichkof@gmail.com)
  */
-public class BalanceManagerTest {
+public class AccountManagerTest {
   @Rule
   public JUnitRuleMockery context = new JUnitRuleMockery();
-  private BalanceManager balanceManager;
+  private AccountManager accountManager;
   private FakeRequest request;
   private FakeResponse response;
   private FakeServletOutputStream servletOutputStream ;
@@ -39,7 +39,7 @@ public class BalanceManagerTest {
 
   @Before
   public void setUp() throws Exception {
-    balanceManager = new BalanceManager(accountsRepository, Providers.of(currentUser));
+    accountManager = new AccountManager(accountsRepository, Providers.of(currentUser));
     request = new FakeRequest();
     servletOutputStream = new FakeServletOutputStream();
     response = new FakeResponse(servletOutputStream);
@@ -60,7 +60,7 @@ public class BalanceManagerTest {
 
     String responseMessage = new Gson().toJson(balanceResponseDTO);
 
-    balanceManager.doPost(request, response);
+    accountManager.doPost(request, response);
 
     String expected = servletOutputStream.getJson();
     assertThat(expected, is(equalTo(responseMessage)));

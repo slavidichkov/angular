@@ -21,8 +21,8 @@ angular.module('bank.deposit', [
         .controller("DepositController", function ($scope, $http, $state) {
 
           $scope.getBalance = function () {
-            $http.post('/account/balance').success(function (response) {
-              $scope.accountBalance = response;
+            $http.post('/account/').success(function (response) {
+              $scope.account = response;
             }).error(function (response, status) {
               if (status === 401) {
                 $state.go("login");
@@ -33,7 +33,7 @@ angular.module('bank.deposit', [
 
           $scope.deposit = function (transaction) {
             $http.post('/account/deposit',transaction).success(function (response) {
-              $scope.accountBalance = response;
+              $scope.account = response;
               $scope.errors = {};
             }).error(function (response, status) {
               if (status === 401) {

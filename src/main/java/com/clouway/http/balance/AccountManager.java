@@ -19,12 +19,12 @@ import java.io.IOException;
  * @author Slavi Dichkov (slavidichkof@gmail.com)
  */
 @Singleton
-public class BalanceManager extends HttpServlet {
+public class AccountManager extends HttpServlet {
   private final AccountsRepository accountsRepository;
   private final Provider<CurrentUser> currentUserProvider;
 
   @Inject
-  public BalanceManager(AccountsRepository accountsRepository, Provider<CurrentUser> currentUserProvider) {
+  public AccountManager(AccountsRepository accountsRepository, Provider<CurrentUser> currentUserProvider) {
     this.accountsRepository = accountsRepository;
     this.currentUserProvider = currentUserProvider;
   }

@@ -24,7 +24,7 @@ describe( 'deposit section', function() {
     httpBackend.expect('POST', '/account/deposit', transaction).respond(200, {"balance":"23.00"});
     scope.deposit(transaction);
     httpBackend.flush();
-    expect(scope.accountBalance).toEqual({"balance":"23.00"});
+    expect(scope.account).toEqual({"balance":"23.00"});
   });
 
 
@@ -45,15 +45,15 @@ describe( 'deposit section', function() {
   });
 
   it('get balance from server', function() {
-    httpBackend.expect('POST', '/account/balance').respond(200, {"balance":"350"});
+    httpBackend.expect('POST', '/account/').respond(200, {"balance":"350"});
     scope.getBalance();
     httpBackend.flush();
-    expect(scope.accountBalance).toEqual({"balance":"350"});
+    expect(scope.account).toEqual({"balance":"350"});
   });
 
   it('init method for not logged user', function() {
     spyOn(state,'go');
-    httpBackend.expect('POST', '/account/balance').respond(401);
+    httpBackend.expect('POST', '/account/').respond(401);
     scope.getBalance();
     httpBackend.flush();
     expect(state.go).toHaveBeenCalledWith('login');
