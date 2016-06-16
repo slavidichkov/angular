@@ -37,11 +37,11 @@ public class DepositManager extends HttpServlet {
     resp.setContentType("application/json;charset=UTF-8");
     ServletInputStream inputStream = req.getInputStream();
     DepositRequestDTO depositRequestDTO = new Gson().fromJson(new InputStreamReader(inputStream), DepositRequestDTO.class);
-    String amount = depositRequestDTO.amount;
+    Double amount = depositRequestDTO.amount;
 
     ServletOutputStream servletOutputStream = resp.getOutputStream();
 
-    if (!isValidAmount(amount)) {
+    if (amount == null) {
       resp.setStatus(500);
       DepositErrorDTO depositErrorDTO = new DepositErrorDTO("INVALID-AMOUNT");
       servletOutputStream.print(new Gson().toJson(depositErrorDTO));
@@ -50,14 +50,10 @@ public class DepositManager extends HttpServlet {
 
     User user = currentUserProvider.get().getUser();
 
-    accountsRepository.deposit(user, Double.valueOf(depositRequestDTO.amount));
+    accountsRepository.deposit(user, amount);
     Double balance = accountsRepository.getBalance(user);
     DepositSuccessDTO depositSuccessDTO = new DepositSuccessDTO(balance);
     resp.setStatus(200);
     servletOutputStream.print(new Gson().toJson(depositSuccessDTO));
-  }
-
-  private boolean isValidAmount(String amount) {
-    return amount.matches("([1-9]{1}[0-9]{0,3}([.][0-9]{2}))|([1-9]{1}[0-9]{0,4})");
   }
 }

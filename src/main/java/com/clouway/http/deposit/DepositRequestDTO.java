@@ -4,9 +4,9 @@ package com.clouway.http.deposit;
  * @author Slavi Dichkov (slavidichkof@gmail.com)
  */
 public class DepositRequestDTO {
-  public final String amount;
+  public final Double amount;
 
-  public DepositRequestDTO(String amount) {
+  public DepositRequestDTO(Double amount) {
     this.amount = amount;
   }
 }

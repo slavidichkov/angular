@@ -38,7 +38,7 @@ public class AccountManager extends HttpServlet {
 
     Double balance = accountsRepository.getBalance(user);
 
-    AccountResponseDTO accountResponseDTO = new AccountResponseDTO(String.valueOf(balance));
+    AccountResponseDTO accountResponseDTO = new AccountResponseDTO(balance);
     ServletOutputStream servletOutputStream = resp.getOutputStream();
 
     resp.setStatus(200);

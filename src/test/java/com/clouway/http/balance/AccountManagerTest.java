@@ -56,7 +56,7 @@ public class AccountManagerTest {
       will(returnValue(23.23));
     }});
 
-    AccountResponseDTO accountResponseDTO =new AccountResponseDTO("23.23");
+    AccountResponseDTO accountResponseDTO =new AccountResponseDTO(23.23);
 
     String responseMessage = new Gson().toJson(accountResponseDTO);
 

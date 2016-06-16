@@ -53,7 +53,7 @@ public class DepositManagerTest {
   @Test
   public void validAmount() throws IOException, ServletException {
     final User user = new User("ivan", "ivan1313", "ivan@abv.bg", "ivan123", "sliven", 23);
-    final DepositRequestDTO depositRequestDTO = new DepositRequestDTO("22.23");
+    final DepositRequestDTO depositRequestDTO = new DepositRequestDTO(22.23);
 
     servletInputStream.setJson(new Gson().toJson(depositRequestDTO));
 
@@ -79,7 +79,7 @@ public class DepositManagerTest {
 
   @Test
   public void invalidAmount() throws IOException, ServletException {
-    final DepositRequestDTO depositRequestDTO = new DepositRequestDTO("22er.23");
+    final DepositRequestDTO depositRequestDTO = new DepositRequestDTO(null);
 
     servletInputStream.setJson(new Gson().toJson(depositRequestDTO));
 
