@@ -56,9 +56,9 @@ public class BalanceManagerTest {
       will(returnValue(23.23));
     }});
 
-    ResponseBalanceDTO responseBalanceDTO =new ResponseBalanceDTO("23.23");
+    BalanceResponseDTO balanceResponseDTO =new BalanceResponseDTO("23.23");
 
-    String responseMessage = new Gson().toJson(responseBalanceDTO);
+    String responseMessage = new Gson().toJson(balanceResponseDTO);
 
     balanceManager.doPost(request, response);
 
